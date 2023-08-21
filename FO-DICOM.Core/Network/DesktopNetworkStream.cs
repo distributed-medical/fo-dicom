@@ -54,7 +54,17 @@ namespace FellowOakDicom.Network
             {
                 _tcpClient.SendBufferSize = options.SendBufferSize.Value;
             }
-            _tcpClient.ConnectAsync(options.Host, options.Port).Wait();
+
+            // DM: This is to get the more appropriate error, instead of an aggregate exception
+            // According to repo-owner, this is changed in future version with a real async / await implementation
+            try
+            {
+                _tcpClient.ConnectAsync(options.Host, options.Port).Wait();
+            }
+            catch (AggregateException e)
+            {
+                throw e.Flatten().InnerException;
+            }
 
             Stream stream = _tcpClient.GetStream();
             if (options.TlsInitiator != null)
