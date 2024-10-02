@@ -439,6 +439,12 @@ namespace FellowOakDicom.Network
                     Logger.LogInformation("{logId} -> {pdu}", LogID, pdu);
                 }
 
+                // DM Specific
+                if (Options.LogSendBytes != null && pdu is PDataTF data)
+                {
+                    Options.LogSendBytes.Report(data.GetLengthOfPDVs());
+                }
+
                 try
                 {
                     await pdu.WriteAsync(_writeStream, CancellationToken.None).ConfigureAwait(false);
@@ -778,6 +784,10 @@ namespace FellowOakDicom.Network
                     }
 
                     await _dimseStream.WriteAsync(pdv.Value.Bytes, 0, pdv.Value.Length).ConfigureAwait(false);
+                    if (Options.LogReceiveBytes != null)
+                    {
+                        Options.LogReceiveBytes.Report((uint)pdv.Value.Length);
+                    }
 
                     if (pdv.IsLastFragment)
                     {

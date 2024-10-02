@@ -20,6 +20,20 @@ namespace FellowOakDicom.Network
         /// <summary>Gets or sets whether or not to write message to log for each P-Data-TF PDU sent or received.</summary>
         public bool LogDataPDUs { get; set; } = false;
 
+        /// <summary>
+        /// DM Specific!
+        /// If an instance is provided here, any service sending data will 
+        /// report the number of bytes written to the underlying stream here
+        /// </summary>
+        public IProgress<uint> LogSendBytes { get; set; }
+
+        /// <summary>
+        /// DM Specific!
+        /// If an instance is provided here, any service receiving data will 
+        /// report the number of bytes received here
+        /// </summary>
+        public IProgress<uint> LogReceiveBytes { get; set; }
+
         /// <summary>Gets or sets whether or not to write command and data datasets to log.</summary>
         public bool LogDimseDatasets { get; set; } = false;
 
